@@ -1,4 +1,4 @@
-﻿# Yolo-v3 and Yolo-v2 for Windows and Linux
+﻿# Yolo-v3 and Yolo-v2 for Windows and Linuxㄴㄴㄴ
 ### (neural network for object detection) - Tensor Cores can be used on [Linux](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux) and [Windows](https://github.com/AlexeyAB/darknet#how-to-compile-on-windows-using-vcpkg)
 
 Contributors: https://github.com/AlexeyAB/darknet/graphs/contributors 
