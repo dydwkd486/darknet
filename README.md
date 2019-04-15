@@ -1,4 +1,64 @@
-﻿# Yolo-v3 and Yolo-v2 for Windows and Linuxㄴㄴㄴ
+﻿# Yolo-v3 and Yolo-v2 for 윈도우 사용법
+
+### 요구사항
+
+* 윈도우 기준
+* 비주얼스튜디오 2017 버전
+* cuda 10.0
+* openCV > 3.4
+* cuDNN >= 7.4.1
+
+### 설치 방법
+
+비주얼스튜디오 2017버전을 먼저 설치하기
+
+설치 후 CUDA를 설치 해야한다. CUDA안에 visual studio integration을 설치 해야 하기 때문이다. 
+
+* CUDA 설치가 안되는 경우 사용자 지정에서  visual sudio intefration을 체크 해제하고 설치 하면 설치가 된다. 이 경우 sudio intefration를 따로 설치 해야한다.(나중에 추가 적으로 설치 방법 작성 예정)
+
+cuda버전에 맞는 cuDNN을 cuda 폴더에 추가한다. 
+
+이후 openCV를 설치 한다.
+
+### 윈도우에 사용가능하게 빌드하기
+
+build/darknet/darknet.sln 파일을 비주얼스튜디오 2017버전으로 연다.
+
+파일을 열고 솔루션 작업 검토가 뜨는 경우 취소를 눌러준다.
+
+x64 and Release으로 변경하다.이미지 참조 https://hsto.org/webt/uh/fk/-e/uhfk-eb0q-hwd9hsxhrikbokd6u.jpeg
+
+프로젝트에 있는 darknet 오른쪽 마우스 클릭 -> 속성선택(alt + enter)
+
+* 구성 속성 -> c/c++에 있는 추가 포함디렉터리에 openCV폴더/build/include 추가
+* 구성 속성 -> 링커에 있는 추가 라이브러리 디렉터리에 openCV폴더/build/x64/vc14/lib
+
+시스템->왼쪽에 있는 고급 시스템 설정 클릭 -> 환경변수 클릭 -> 시스템 변수에 cudnn추가 하고 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0 추가(각각 위치 가 다를수 있지만 왠만하면 주소가 같을 것이다.)
+
+이후 비주얼스튜디오에서 파일을 빌드 한다. 오류가 나오는 경우 다른 문제가 있는 것이다.
+
+빌드후에 X64폴더에 darknet.exe 파일이 있는 것을 알수있을 것이다.
+
+x64폴더 안에 opencv폴더/build/bin에 있는 opencv_ffmpeg340.dll,opencv_ffmpeg340_64.dll파일을 넣고, opencv폴더/build/x64/vc14/bin에 있는 opencv_world340d.dll,opencv_world340.dll 파일을 넣는다.
+
+실험을 위해 필요한 yolov3.weights를 다운 받는다. https://pjreddie.com/media/files/yolov3.weights
+
+받은 파일을 x64폴더에 넣는다.
+
+### 파일 실행하기
+cmd창에서 폴더 위치로 간 후 
+
+ darknet.exe detector test data/coco.data cfg/yolov3.cfg yolov3.weights dog.jpg
+
+실행 시키고 결과가 나오면 성공!
+
+
+### 새로운 트레인 파일 만들기
+
+-- 추가 예정 --
+
+---
+# Yolo-v3 and Yolo-v2 for Windows and Linux
 ### (neural network for object detection) - Tensor Cores can be used on [Linux](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux) and [Windows](https://github.com/AlexeyAB/darknet#how-to-compile-on-windows-using-vcpkg)
 
 Contributors: https://github.com/AlexeyAB/darknet/graphs/contributors 
