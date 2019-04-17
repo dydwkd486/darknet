@@ -1,4 +1,4 @@
-﻿# Yolo-v3 and Yolo-v2 for 윈도우 사용법
+# Yolo-v3 and Yolo-v2 for 윈도우 사용법
 
 ### 요구사항
 
@@ -31,7 +31,7 @@ x64 and Release으로 변경하다.이미지 참조 https://hsto.org/webt/uh/fk/
 프로젝트에 있는 darknet 오른쪽 마우스 클릭 -> 속성선택(alt + enter)
 
 * 구성 속성 -> c/c++에 있는 추가 포함디렉터리에 openCV폴더/build/include 추가
-* 구성 속성 -> 링커에 있는 추가 라이브러리 디렉터리에 openCV폴더/build/x64/vc14/lib
+* 구성 속성 -> 링커에 있는 추가 라이브러리 디렉터리에 openCV폴더/build/x64/vc14/lib 추가
 
 시스템->왼쪽에 있는 고급 시스템 설정 클릭 -> 환경변수 클릭 -> 시스템 변수에 cudnn추가 하고 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.0 추가(각각 위치 가 다를수 있지만 왠만하면 주소가 같을 것이다.)
 
@@ -55,7 +55,73 @@ cmd창에서 폴더 위치로 간 후
 
 ### 새로운 트레인 파일 만들기
 
--- 추가 예정 --
+1. yolo-obj.cfg 파일 생성하기(yolov3.cfg파일을 yolo-obj.cfg로 카피 한다.)
+
+* batch=64로 변경한다.
+* subdivisions=8 로 변경한다.
+* max_batches은 클래스x2000으로 하여 변경한다. 예를들어 3클래스면 max_batches은=6000으로 변경한다.
+* steps은 max_batches의 80,90%로 작성한다. 예를 들어 max_batches가 6000이면 steps=4800,5400으로 변경한다.
+* [yolo]레이어 안에 classes=클래스 수를 변경한다 총 3군데가 있다.
+* [yolo]레이어 뒤에 있는 [convolutional]레이어에 있는 filters는 (클래스+5)x3을하여 변경한다. 총 3군데를 변경한다.
+
+예를 들어 calsses가 3개면 calsses=3, filters=24가 된다.
+
+2. build\darknet\x64\data\에 obj.names파일을 생성한다.
+
+obj.names에는 각 클래스별의 이름명을 작성한다. 3개의 클래스였다면 3개의 클래스 명을 작성하면된다.
+
+```
+person
+face
+upperbody
+```
+
+3. build\darknet\x64\data\에 obj.data파일을 생성한다.
+
+obj.data파일은 아래와 같이 작성하면 된다.
+
+```
+classes= 3
+train  = data/train.txt
+valid  = data/test.txt
+names = data/obj.names
+backup = backup/
+```
+
+classes=3은 클래스개수를 작성하면 된다. train,valid는 train.txt파일,test.txt 에 관하여 위치 주소를 작성하면 된다. (이 텍스트에 관련해서는 아래에 설명되어있다.)
+
+4. build\darknet\x64\data\obj\에 이미지파일(.jpg)을 집어 넣는다.
+
+5. 이제 이미지에 바운딩박스가 되어있는 라벨이 필요하다. 이 작업을 하기위해서는 https://github.com/AlexeyAB/Yolo_mark 들어가서 작업을 하면 된다.
+
+이를 통해 txt파일을 얻을수있으며 이 파일을 build\darknet\x64\data\obj\ 위치에 jpg파일과 함께둔다.
+
+(만드는 방법도 추가적으로 제작하겠습니다.)
+
+6. build\darknet\x64\data\에 train.txt 파일을 생성한다.
+파일에는 이미지 데이터의 위치를 작성한다.
+```
+data/obj/img1.jpg
+data/obj/img2.jpg
+data/obj/img3.jpg
+```
+7. convolutional layers위해 학습된 weight를 다운받는다. https://pjreddie.com/media/files/darknet53.conv.74 
+다운받은 자료를 build\darknet\x64에 넣는다.
+
+8. 트레인을 시작한다. cmd창에서 darknet.exe detector train data/obj.data yolo-obj.cfg darknet53.conv.74 입력한다.
+ * build\darknet\x64\backup\에 100 iterations 마다 yolo-obj_last.weights파일이 저장된다.
+ * build\darknet\x64\backup\에 1000 iterations 마다 yolo-obj_XXXX.weights파일이 저장된다.
+
+9. 트레인이 끝이 나면 build\darknet\x64\backup\에 yolo-obj_final.weights 파일이 생성된다.
+
+Note: 만약에 nan이 보인다면 두가지 경우가 있다. avg값에 nan이 뜨는 경우에는 문제가 있지만, 다른곳에도 nan이 나온다면 문제없이 잘되고 있는것이다.
+
+Note: Out of memory라는 에러가 뜬다면 메모리부족으로 인한 문제이다. 이는 .cfg파일에 subdivisions값을 8에서 16으로 늘리면 된다. 그래도 문제가 있다면 batch를 줄이면 된다. 줄이거나 늘릴때는 2의 배수로 생각하고 작업하면 된다.
+
+
+### 언제 파일을 멈추는 것이 좋을까?
+
+추가 작성예정.
 
 ---
 # Yolo-v3 and Yolo-v2 for Windows and Linux
